@@ -1,12 +1,50 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Header } from "@/components/Header";
+import { ConfigPanel } from "@/components/ConfigPanel";
+import { LogPanel } from "@/components/LogPanel";
+import { ResultsTable } from "@/components/ResultsTable";
+import { Footer } from "@/components/Footer";
+import { useCrawler } from "@/hooks/useCrawler";
 
 const Index = () => {
+  const {
+    isConnected,
+    isRunning,
+    logs,
+    results,
+    queueCount,
+    processedCount,
+    errorCount,
+    startCrawl,
+    stopCrawl,
+    clearLogs,
+  } = useCrawler();
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Header isConnected={isConnected} />
+
+      <main className="flex-1 container mx-auto px-4 py-6 flex flex-col gap-6">
+        {/* Configuration Panel */}
+        <ConfigPanel
+          isRunning={isRunning}
+          onStart={startCrawl}
+          onStop={stopCrawl}
+        />
+
+        {/* Split View: Logs & Results */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-[500px]">
+          <LogPanel logs={logs} onClear={clearLogs} />
+          <ResultsTable results={results} />
+        </div>
+      </main>
+
+      <Footer
+        queueCount={queueCount}
+        processedCount={processedCount}
+        errorCount={errorCount}
+        results={results}
+        isRunning={isRunning}
+      />
     </div>
   );
 };
